@@ -48,10 +48,10 @@
           </label>
           <select name="status" id="status" class="form-select" onchange="this.form.submit()">
             <option value="">Todos</option>
-            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pendente</option>
-            <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Aprovado</option>
-            <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejeitado</option>
-            <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelado</option>
+            <option value="pending" {% if status_filter=='pending' %}selected{% endif %}>Pendente</option>
+            <option value="approved" {% if status_filter=='approved' %}selected{% endif %}>Aprovado</option>
+            <option value="rejected" {% if status_filter=='rejected' %}selected{% endif %}>Rejeitado</option>
+            <option value="cancelled" {% if status_filter=='cancelled' %}selected{% endif %}>Cancelado</option>
           </select>
         </div>
         <div class="col-md-6 d-flex align-items-end">
@@ -146,11 +146,72 @@
       </div>
       {% endif %}
     </div>
-    {% if payments %}
-    <div class="card-footer bg-white text-center">
-      <small class="text-muted">
-        Mostrando até 50 doações mais recentes
-      </small>
+    {% if page_obj %}
+    <div class="card-footer bg-white">
+      <nav aria-label="Navegação de páginas">
+        <ul class="pagination pagination-sm justify-content-center mb-0">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}"
+              aria-label="Primeira">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a class="page-link"
+              href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+              aria-label="Anterior">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;&laquo;</span>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a
+              class="page-link" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{
+              num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+                aria-label="Próxima">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link"
+                href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+                aria-label="Última">
+                <span aria-hidden="true">&raquo;&raquo;</span>
+              </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">&raquo;</span>
+            </li>
+            <li class="page-item disabled">
+              <span class="page-link">&raquo;&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+      </nav>
+      <div class="text-center mt-2">
+        <small class="text-muted">
+          Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ page_obj.paginator.count }} doações
+        </small>
+      </div>
     </div>
     {% endif %}
   </div>

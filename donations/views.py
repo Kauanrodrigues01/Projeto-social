@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from services.mercadopago import MercadoPagoService
@@ -154,7 +155,7 @@ def waiting_payment(request, payment_id):
 @login_required
 def dashboard(request):
     """Dashboard administrativo para visualizar doações"""
-    payments = Payment.objects.all()
+    payments = Payment.objects.all().order_by("-data")
 
     # Estatísticas
     total_arrecadado = sum(p.valor for p in payments if p.status == "approved")
@@ -167,8 +168,14 @@ def dashboard(request):
     if status_filter:
         payments = payments.filter(status=status_filter)
 
+    # Paginação
+    paginator = Paginator(payments, 20)  # 20 doações por página
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "payments": payments[:50],  # Limitar a 50 registros
+        "page_obj": page_obj,
+        "payments": page_obj,  # Mantém compatibilidade com o template
         "total_arrecadado": total_arrecadado,
         "total_pendente": total_pendente,
         "total_doacoes": total_doacoes,
