@@ -11,8 +11,10 @@ def donation_page(request):
     """Página de doação onde o usuário escolhe o valor e tipo de doação"""
     if request.method == "POST":
         valor = request.POST.get("valor")
-        tipo_doacao = request.POST.get("tipo_doacao")
         nome_doador = request.POST.get("nome_doador")
+
+        # Tipo de doação agora é sempre brinquedos
+        tipo_doacao = "brinquedos"
 
         # Validações
         if not valor:
@@ -31,7 +33,7 @@ def donation_page(request):
         # Criar pagamento no banco de dados
         payment = Payment.objects.create(
             valor=valor,
-            tipo_doacao=tipo_doacao if tipo_doacao else None,
+            tipo_doacao=tipo_doacao,
             nome_doador=nome_doador if nome_doador else None,
             status="pending",
         )
@@ -39,13 +41,7 @@ def donation_page(request):
         # Criar pagamento PIX no Mercado Pago
         try:
             # Preparar descrição do pagamento
-            tipo_descricao = ""
-            if tipo_doacao == "brinquedos":
-                tipo_descricao = " - Brinquedos"
-            elif tipo_doacao == "alimentacao":
-                tipo_descricao = " - Alimentação"
-
-            descricao = f"Doação Projeto Social{tipo_descricao}"
+            descricao = "Doação Projeto Social - Brinquedos"
 
             # Criar pagamento PIX
             mp_service = MercadoPagoService()
@@ -167,12 +163,9 @@ def dashboard(request):
 
     # Filtros
     status_filter = request.GET.get("status")
-    tipo_filter = request.GET.get("tipo")
 
     if status_filter:
         payments = payments.filter(status=status_filter)
-    if tipo_filter:
-        payments = payments.filter(tipo_doacao=tipo_filter)
 
     context = {
         "payments": payments[:50],  # Limitar a 50 registros
@@ -180,6 +173,5 @@ def dashboard(request):
         "total_pendente": total_pendente,
         "total_doacoes": total_doacoes,
         "status_filter": status_filter,
-        "tipo_filter": tipo_filter,
     }
     return render(request, "donations/dashboard.html", context)
