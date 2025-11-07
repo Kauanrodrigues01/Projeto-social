@@ -21,8 +21,8 @@ def donation_page(request):
 
         try:
             valor = float(valor)
-            if valor < 0.10:
-                messages.error(request, "O valor mínimo é R$ 0,10.")
+            if valor < 1.00:
+                messages.error(request, "O valor mínimo é R$ 1,00.")
                 return render(request, "donations/donation_page.html")
         except ValueError:
             messages.error(request, "Valor inválido.")
