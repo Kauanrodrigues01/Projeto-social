@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+.eggs/
+*.egg
+.pytest_cache/
+.mypy_cache/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+Dockerfile*
+.dockerignore
+
+# OS
+.DS_Store
+._*
+Thumbs.db
+*.tmp
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Tests
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Node (se houver frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Temporary files
+*.bak
+*.swp
+*~

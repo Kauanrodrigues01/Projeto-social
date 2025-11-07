@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Administrativo - Projeto Social{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="text-white">
+        <i class="bi bi-speedometer2"></i> Dashboard Administrativo
+      </h1>
+      <p class="text-white-50">Gerencie e acompanhe todas as doações</p>
+    </div>
+  </div>
+
+  <!-- Cards de Estatísticas -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="stats-card">
+        <i class="bi bi-cash-stack" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">R$ {{ total_arrecadado|floatformat:2 }}</h3>
+        <p>Total Arrecadado</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <i class="bi bi-hourglass-split" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">R$ {{ total_pendente|floatformat:2 }}</h3>
+        <p>Aguardando Pagamento</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <i class="bi bi-heart-fill" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">{{ total_doacoes }}</h3>
+        <p>Doações Confirmadas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3">
+        <div class="col-md-4">
+          <label for="status" class="form-label fw-bold">
+            <i class="bi bi-filter"></i> Filtrar por Status
+          </label>
+          <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <option value="pending" {% if status_filter=='pending' %}selected{% endif %}>Pendente</option>
+            <option value="approved" {% if status_filter=='approved' %}selected{% endif %}>Aprovado</option>
+            <option value="rejected" {% if status_filter=='rejected' %}selected{% endif %}>Rejeitado</option>
+            <option value="cancelled" {% if status_filter=='cancelled' %}selected{% endif %}>Cancelado</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="tipo" class="form-label fw-bold">
+            <i class="bi bi-tag"></i> Filtrar por Tipo
+          </label>
+          <select name="tipo" id="tipo" class="form-select" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <option value="brinquedos" {% if tipo_filter=='brinquedos' %}selected{% endif %}>Brinquedos</option>
+            <option value="alimentacao" {% if tipo_filter=='alimentacao' %}selected{% endif %}>Alimentação</option>
+          </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          {% if status_filter or tipo_filter %}
+          <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100">
+            <i class="bi bi-x-circle"></i> Limpar Filtros
+          </a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabela de Doações -->
+  <div class="card">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0">
+        <i class="bi bi-list-ul"></i> Lista de Doações
+        <span class="badge bg-primary ms-2">{{ payments|length }}</span>
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      {% if payments %}
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Data</th>
+              <th>Valor</th>
+              <th>Tipo</th>
+              <th>Doador</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Payment ID</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+            <tr>
+              <td><strong>#{{ payment.id }}</strong></td>
+              <td>{{ payment.data|date:"d/m/Y H:i" }}</td>
+              <td class="text-success fw-bold">R$ {{ payment.valor }}</td>
+              <td>
+                {% if payment.tipo_doacao %}
+                {% if payment.tipo_doacao == 'brinquedos' %}
+                <span class="badge bg-info">🎁 {{ payment.get_tipo_doacao_display }}</span>
+                {% else %}
+                <span class="badge bg-success">🍎 {{ payment.get_tipo_doacao_display }}</span>
+                {% endif %}
+                {% else %}
+                <span class="badge bg-secondary">Geral</span>
+                {% endif %}
+              </td>
+              <td>{{ payment.nome_doador|default:"Anônimo" }}</td>
+              <td>{{ payment.email_doador|default:"-" }}</td>
+              <td>
+                {% if payment.status == 'approved' %}
+                <span class="badge bg-success">{{ payment.get_status_display }}</span>
+                {% elif payment.status == 'pending' %}
+                <span class="badge bg-warning text-dark">{{ payment.get_status_display }}</span>
+                {% elif payment.status == 'rejected' %}
+                <span class="badge bg-danger">{{ payment.get_status_display }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ payment.get_status_display }}</span>
+                {% endif %}
+              </td>
+              <td><small class="font-monospace">{{ payment.payment_id|default:"-" }}</small></td>
+              <td>
+                <a href="{% url 'waiting_payment' payment.id %}" class="btn btn-sm btn-outline-primary"
+                  title="Ver detalhes">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{% url 'admin:donations_payment_change' payment.id %}" class="btn btn-sm btn-outline-secondary"
+                  title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+        <p class="text-muted mt-3">Nenhuma doação encontrada</p>
+        <a href="{% url 'donation_page' %}" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> Criar Doação de Teste
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    {% if payments %}
+    <div class="card-footer bg-white text-center">
+      <small class="text-muted">
+        Mostrando até 50 doações mais recentes
+      </small>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <a href="{% url 'admin:donations_payment_changelist' %}" class="btn btn-outline-light w-100">
+        <i class="bi bi-gear"></i> Gerenciar no Admin
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a href="{% url 'donation_page' %}" class="btn btn-outline-light w-100">
+        <i class="bi bi-plus-circle"></i> Nova Doação
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

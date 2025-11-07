@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: projeto-social-web
+    restart: unless-stopped
+    volumes:
+      - static_volume:/app/staticfiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # As variáveis de ambiente devem ser definidas no arquivo .env ou no host
+      # DATABASE_URL deve ser fornecido externamente
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL:-admin@example.com}
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD:-admin123}
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  static_volume:
