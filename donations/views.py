@@ -23,8 +23,8 @@ def donation_page(request):
 
         try:
             valor = float(valor)
-            if valor < 1.00:
-                messages.error(request, "O valor mínimo é R$ 1,00.")
+            if valor < 0.01:
+                messages.error(request, "O valor mínimo é R$ 0,01.")
                 return render(request, "donations/donation_page.html")
         except ValueError:
             messages.error(request, "Valor inválido.")
@@ -41,7 +41,7 @@ def donation_page(request):
         # Criar pagamento PIX no Mercado Pago
         try:
             # Preparar descrição do pagamento
-            descricao = "Doação Projeto Social - Brinquedos"
+            descricao = "Doação ToyLink - Brinquedos"
 
             # Criar pagamento PIX
             mp_service = MercadoPagoService()
