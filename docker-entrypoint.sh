@@ -13,10 +13,6 @@ python manage.py wait_for_db --timeout=60
 echo "📦 Running database migrations..."
 python manage.py migrate --noinput
 
-# Create superuser automatically
-echo "👤 Creating superuser if not exists..."
-python manage.py create_superuser_auto
-
 # Collect static files
 echo "📁 Collecting static files..."
 python manage.py collectstatic --noinput

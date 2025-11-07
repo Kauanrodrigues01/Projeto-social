@@ -145,7 +145,7 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Superuser configuration
-SUPERUSER_EMAIL = config("SUPERUSER_EMAIL", default="admin@example.com")
+SUPERUSER_EMAIL = config("SUPERUSER_EMAIL", default="admin")
 SUPERUSER_PASSWORD = config("SUPERUSER_PASSWORD", default="admin123")
 
 # Mercado Pago configuration
@@ -153,3 +153,7 @@ MP_ACCESS_TOKEN = config("MP_ACCESS_TOKEN", default="")
 MP_BASE_API_URL = config("MP_BASE_API_URL", default="https://api.mercadopago.com")
 NOTIFICATION_URL = config("NOTIFICATION_URL", default="")
 BASE_APPLICATION_URL = config("BASE_APPLICATION_URL", default="http://localhost:8000")
+
+# Login configuration
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"

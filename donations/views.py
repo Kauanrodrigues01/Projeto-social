@@ -21,8 +21,8 @@ def donation_page(request):
 
         try:
             valor = float(valor)
-            if valor <= 0:
-                messages.error(request, "O valor deve ser maior que zero.")
+            if valor < 0.10:
+                messages.error(request, "O valor mínimo é R$ 0,10.")
                 return render(request, "donations/donation_page.html")
         except ValueError:
             messages.error(request, "Valor inválido.")
@@ -93,18 +93,61 @@ def waiting_payment(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
 
     if request.method == "POST":
-        # Simular verificação de status
-        # Aqui será integrado com Mercado Pago futuramente
-        if payment.status == "pending":
-            messages.info(
-                request, "Pagamento ainda não foi confirmado. Aguarde alguns instantes."
-            )
-        elif payment.status == "approved":
-            messages.success(request, "Pagamento aprovado! Obrigado pela sua doação!")
+        # Verificar status no Mercado Pago
+        if payment.payment_id:
+            try:
+                mp_service = MercadoPagoService()
+                payment_info = mp_service.get_payment_info(payment.payment_id)
+
+                # Atualizar status do pagamento
+                mp_status = payment_info.get("status")
+
+                if mp_status == "approved":
+                    payment.status = "approved"
+                    if not payment.data:
+                        from datetime import datetime
+
+                        payment.data = datetime.now()
+                    payment.save()
+                    messages.success(
+                        request, "Pagamento aprovado! Obrigado pela sua doação! 🎉"
+                    )
+                elif mp_status == "pending":
+                    messages.info(
+                        request,
+                        "Pagamento ainda não foi confirmado. Aguarde alguns instantes.",
+                    )
+                elif mp_status == "rejected":
+                    payment.status = "rejected"
+                    payment.save()
+                    messages.error(request, "Pagamento foi recusado.")
+                elif mp_status == "cancelled":
+                    payment.status = "cancelled"
+                    payment.save()
+                    messages.warning(request, "Pagamento foi cancelado.")
+                else:
+                    messages.warning(request, f"Status do pagamento: {mp_status}")
+
+            except Exception as e:
+                messages.error(request, f"Erro ao verificar status: {str(e)}")
         else:
-            messages.warning(
-                request, f"Status do pagamento: {payment.get_status_display()}"
-            )
+            # Fallback para quando não tem payment_id do MP
+            if payment.status == "pending":
+                messages.info(
+                    request,
+                    "Pagamento ainda não foi confirmado. Aguarde alguns instantes.",
+                )
+            elif payment.status == "approved":
+                messages.success(
+                    request, "Pagamento aprovado! Obrigado pela sua doação!"
+                )
+            else:
+                messages.warning(
+                    request, f"Status do pagamento: {payment.get_status_display()}"
+                )
+
+        # Redirecionar para evitar reenvio de formulário ao recarregar
+        return redirect("waiting_payment", payment_id=payment.id)
 
     context = {
         "payment": payment,
