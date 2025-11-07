@@ -19,51 +19,55 @@
 
             <!-- Valor da Doação -->
             <div class="mb-3 mb-md-4">
-              <label for="valor" class="form-label fw-bold">
+              <label for="valor" class="form-label fw-bold small">
                 <i class="bi bi-currency-dollar"></i> Valor da Doação *
               </label>
-              <input type="number" class="form-control form-control-lg" id="valor" name="valor" placeholder="0.00"
-                step="0.01" min="0.10" required>
-              <div class="form-text">Valor mínimo: R$ 0,10</div>
+              <input type="number" class="form-control" id="valor" name="valor" placeholder="0.00" step="0.01"
+                min="0.10" required>
+              <div class="form-text small">Valor mínimo: R$ 0,10</div>
             </div>
 
             <!-- Botões de valor rápido -->
             <div class="mb-3 mb-md-4">
-              <label class="form-label fw-bold">Valores Sugeridos:</label>
-              <div class="d-grid d-sm-flex flex-wrap gap-2">
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setValor(10)">R$ 10</button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setValor(25)">R$ 25</button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setValor(50)">R$ 50</button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setValor(100)">R$ 100</button>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setValor(200)">R$ 200</button>
+              <label class="form-label fw-bold small">Valores Sugeridos:</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="setValor(10)"
+                  style="min-width: 60px;">R$ 10</button>
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="setValor(25)"
+                  style="min-width: 60px;">R$ 25</button>
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="setValor(50)"
+                  style="min-width: 60px;">R$ 50</button>
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="setValor(100)"
+                  style="min-width: 60px;">R$ 100</button>
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="setValor(200)"
+                  style="min-width: 60px;">R$ 200</button>
               </div>
             </div>
 
             <!-- Tipo de Doação -->
             <div class="mb-3 mb-md-4">
-              <label for="tipo_doacao" class="form-label fw-bold">
+              <label for="tipo_doacao" class="form-label fw-bold small">
                 <i class="bi bi-tag"></i> Destino da Doação (opcional)
               </label>
-              <select class="form-select form-select-lg" id="tipo_doacao" name="tipo_doacao">
+              <select class="form-select" id="tipo_doacao" name="tipo_doacao">
                 <option value="">Não especificar</option>
                 <option value="brinquedos">🎁 Brinquedos</option>
                 <option value="alimentacao">🍎 Alimentação</option>
               </select>
-              <div class="form-text">Deixe em branco para doação geral</div>
+              <div class="form-text small">Deixe em branco para doação geral</div>
             </div>
 
             <!-- Nome do Doador -->
             <div class="mb-3 mb-md-4">
-              <label for="nome_doador" class="form-label fw-bold">
+              <label for="nome_doador" class="form-label fw-bold small">
                 <i class="bi bi-person"></i> Seu Nome (opcional)
               </label>
-              <input type="text" class="form-control form-control-lg" id="nome_doador" name="nome_doador"
-                placeholder="João Silva">
+              <input type="text" class="form-control" id="nome_doador" name="nome_doador" placeholder="João Silva">
             </div>
 
             <!-- Botão Submit -->
             <div class="d-grid gap-2 mt-4">
-              <button type="submit" class="btn btn-primary btn-lg">
+              <button type="submit" class="btn btn-primary">
                 <i class="bi bi-heart-fill"></i> Continuar para Pagamento PIX
               </button>
             </div>
