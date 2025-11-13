@@ -48,10 +48,10 @@
           </label>
           <select name="status" id="status" class="form-select" onchange="this.form.submit()">
             <option value="">Todos</option>
-            <option value="pending" {% if status_filter=='pending' %}selected{% endif %}>Pendente</option>
-            <option value="approved" {% if status_filter=='approved' %}selected{% endif %}>Aprovado</option>
-            <option value="rejected" {% if status_filter=='rejected' %}selected{% endif %}>Rejeitado</option>
-            <option value="cancelled" {% if status_filter=='cancelled' %}selected{% endif %}>Cancelado</option>
+            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pendente</option>
+            <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Aprovado</option>
+            <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejeitado</option>
+            <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelado</option>
           </select>
         </div>
         <div class="col-md-6 d-flex align-items-end">
