@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Aguardando Pagamento - ToyLink{% endblock %}
 
@@ -150,11 +151,17 @@
           {% endif %}
 
           <!-- Botão Verificar Status -->
-          <form method="post" class="mb-3 mb-md-4">
+          <form method="post" class="mb-3 mb-md-4" id="verifyForm">
             {% csrf_token %}
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-info">
-                <i class="bi bi-arrow-clockwise"></i> Verificar Status do Pagamento
+              <button type="submit" class="btn btn-info" id="verifyBtn">
+                <span id="verifyBtnText">
+                  <i class="bi bi-arrow-clockwise"></i> Verificar Status do Pagamento
+                </span>
+                <span id="verifyBtnLoading" class="d-none">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Verificando...
+                </span>
               </button>
             </div>
           </form>
@@ -204,5 +211,28 @@
       button.classList.add('btn-outline-secondary');
     }, 2000);
   }
+
+  // Prevenir múltiplos cliques no botão de verificar status
+  document.addEventListener('DOMContentLoaded', function () {
+    const verifyForm = document.getElementById('verifyForm');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyBtnText = document.getElementById('verifyBtnText');
+    const verifyBtnLoading = document.getElementById('verifyBtnLoading');
+    let isVerifying = false;
+
+    if (verifyForm) {
+      verifyForm.addEventListener('submit', function (e) {
+        if (isVerifying) {
+          e.preventDefault();
+          return false;
+        }
+
+        isVerifying = true;
+        verifyBtn.disabled = true;
+        verifyBtnText.classList.add('d-none');
+        verifyBtnLoading.classList.remove('d-none');
+      });
+    }
+  });
 </script>
 {% endblock %}

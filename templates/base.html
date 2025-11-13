@@ -15,6 +15,9 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  {% load static %}
+  <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
+
   <style>
     * {
       font-family: 'Poppins', sans-serif;
@@ -117,6 +120,14 @@
       margin: 0;
       opacity: 0.9;
     }
+
+    .navbar-brand img {
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-brand:hover img {
+      transform: scale(1.1);
+    }
   </style>
 
   {% block extra_css %}{% endblock %}
@@ -126,8 +137,9 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light mb-4">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="{% url 'donation_page' %}">
-        <i class="bi bi-heart-fill text-danger"></i> ToyLink
+      <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'donation_page' %}">
+        <img src="{% static 'logo.png' %}" alt="ToyLink Logo" height="40" class="me-2">
+        <span>ToyLink</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
